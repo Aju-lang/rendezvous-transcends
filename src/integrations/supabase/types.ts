@@ -14,10 +14,139 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      announcements: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          priority: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          priority?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          priority?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      gallery: {
+        Row: {
+          caption: string | null
+          id: string
+          image_url: string
+          uploaded_at: string
+        }
+        Insert: {
+          caption?: string | null
+          id?: string
+          image_url: string
+          uploaded_at?: string
+        }
+        Update: {
+          caption?: string | null
+          id?: string
+          image_url?: string
+          uploaded_at?: string
+        }
+        Relationships: []
+      }
+      results: {
+        Row: {
+          created_at: string
+          event_id: string | null
+          id: string
+          image_url: string | null
+          participant: string
+          points: number | null
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          image_url?: string | null
+          participant: string
+          points?: number | null
+          position: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          image_url?: string | null
+          participant?: string
+          points?: number | null
+          position?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "results_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "schedule"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      schedule: {
+        Row: {
+          category: string
+          created_at: string
+          date: string
+          description: string | null
+          event_name: string
+          id: string
+          time: string
+          updated_at: string
+          venue: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          date: string
+          description?: string | null
+          event_name: string
+          id?: string
+          time: string
+          updated_at?: string
+          venue: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date?: string
+          description?: string | null
+          event_name?: string
+          id?: string
+          time?: string
+          updated_at?: string
+          venue?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      leaderboard: {
+        Row: {
+          event_count: number | null
+          participant: string | null
+          rank: number | null
+          total_points: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
