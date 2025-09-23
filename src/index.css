@@ -2,39 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* RENDEZVOUS Festival Design System - Inspired by poster aesthetic
+All colors MUST be HSL. Based on colorful gradient and modern festival theme.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 222 84% 4.9%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 222 84% 6%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 222 84% 6%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 100% 50%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 25 100% 50%;
+    --secondary-foreground: 222 84% 4.9%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 222 32% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 200 100% 50%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 222 32% 17%;
+    --input: 222 32% 17%;
+    --ring: 0 100% 50%;
+
+    /* Festival-specific design tokens */
+    --festival-gradient: linear-gradient(135deg, hsl(222 84% 4.9%), hsl(25 100% 50%), hsl(200 100% 50%));
+    --festival-red: 0 100% 50%;
+    --festival-orange: 25 100% 50%;
+    --festival-blue: 200 100% 50%;
+    --festival-gold: 45 100% 60%;
+    
+    /* Wave pattern inspired by poster */
+    --wave-pattern: repeating-linear-gradient(90deg, transparent 0px, hsl(var(--festival-red)) 2px, hsl(var(--festival-red)) 4px, transparent 6px);
+    
+    /* Shadows with festival colors */
+    --festival-glow: 0 0 40px hsl(var(--festival-red) / 0.4);
+    --festival-shadow: 0 10px 30px -10px hsl(var(--festival-red) / 0.3);
 
     --radius: 0.5rem;
 
