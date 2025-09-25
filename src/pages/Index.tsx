@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, MapPin, Clock, Star } from "lucide-react";
+import { Calendar, MapPin, Clock, Star, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/Header";
@@ -20,6 +20,8 @@ const Index = () => {
     { name: "Gallery", href: "/gallery", icon: Star, description: "Festival moments" },
     { name: "Announcements", href: "/announcements", icon: Star, description: "Latest updates" },
   ];
+
+  const adminItem = { name: "Admin Portal", href: "/auth", icon: Settings, description: "Admin access" };
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-secondary/10">
@@ -118,6 +120,28 @@ const Index = () => {
                   </CardContent>
                 </Card>
               ))}
+              
+              {/* Admin Portal Card */}
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-red-500/50 bg-gradient-to-br from-red-500/10 to-orange-500/10">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="h-12 w-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <adminItem.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground group-hover:text-red-500 transition-colors">
+                        {adminItem.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">{adminItem.description}</p>
+                    </div>
+                  </div>
+                  <Button asChild variant="outline" className="w-full group-hover:bg-red-500 group-hover:text-white border-red-500/50">
+                    <a href={adminItem.href}>
+                      Access Admin
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
