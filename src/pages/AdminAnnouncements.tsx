@@ -90,7 +90,10 @@ const AdminAnnouncements = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setAnnouncements(data || []);
+      setAnnouncements((data as any[])?.map(item => ({
+        ...item,
+        priority: item.priority as 'high' | 'medium' | 'low' | 'urgent'
+      })) || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -153,6 +156,7 @@ const AdminAnnouncements = () => {
       const announcementData = {
         title: title.trim(),
         content: content.trim(),
+        message: content.trim(), // Required by database schema
         priority,
         category: category.trim(),
         is_active: true

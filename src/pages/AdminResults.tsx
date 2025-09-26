@@ -132,7 +132,11 @@ const AdminResults = () => {
         .order('position', { ascending: true });
 
       if (error) throw error;
-      setResults(data || []);
+      setResults((data as any[])?.map(item => ({
+        ...item,
+        photos: Array.isArray(item.photos) ? item.photos : 
+                typeof item.photos === 'string' ? JSON.parse(item.photos || '[]') : []
+      })) || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -817,7 +821,7 @@ const AdminResults = () => {
                   style={{
                     background: selectedTemplate.style.background,
                     fontFamily: selectedTemplate.style.fontFamily,
-                    color: selectedTemplate.style.color || '#ffffff'
+                    color: '#ffffff'
                   }}
                 >
                   <h1 className="text-2xl font-bold mb-2">COMPETITION RESULT</h1>

@@ -67,7 +67,12 @@ const AdminGallery = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setGallery(data || []);
+      setGallery((data as any[])?.map(item => ({
+        ...item,
+        likes_count: item.likes_count || 0,
+        created_at: item.uploaded_at,
+        updated_at: item.uploaded_at
+      })) || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -296,7 +301,7 @@ const AdminGallery = () => {
               <div className="aspect-square relative">
                 <img
                   src={item.image_url}
-                  alt={item.caption || 'Gallery image'}
+                  alt={item.description || item.title || 'Gallery image'}
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />

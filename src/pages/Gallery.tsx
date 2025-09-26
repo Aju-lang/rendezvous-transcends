@@ -49,7 +49,11 @@ const Gallery = () => {
 
       if (error) throw error;
 
-      setGalleryItems(data || []);
+      setGalleryItems((data as any[])?.map(item => ({
+        ...item,
+        created_at: item.uploaded_at,
+        likes_count: item.likes_count || 0
+      })) || []);
       
       // Extract unique categories
       const uniqueCategories = [...new Set((data || []).map(item => item.category))];

@@ -59,7 +59,10 @@ const Announcements = () => {
 
       if (error) throw error;
 
-      setAnnouncements(data || []);
+      setAnnouncements((data as any[])?.map(item => ({
+        ...item,
+        priority: item.priority as 'high' | 'medium' | 'low' | 'urgent'
+      })) || []);
       
       // Extract unique categories
       const uniqueCategories = [...new Set((data || []).map(item => item.category))];

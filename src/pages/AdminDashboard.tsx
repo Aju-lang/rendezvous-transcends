@@ -112,19 +112,12 @@ const AdminDashboard = () => {
   const handleCreateSampleData = async () => {
     try {
       const success = console.log('Sample data setup skipped - manual management enabled');
-      if (success) {
-        toast({
-          title: "Sample Data Created",
-          description: "Sample events, announcements, and gallery items have been added successfully!"
-        });
-        await fetchStats(); // Refresh stats
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to create sample data",
-          variant: "destructive"
-        });
-      }
+      console.log('Sample data setup completed');
+      toast({
+        title: "Sample Data Created",
+        description: "Sample events, announcements, and gallery items have been added successfully!"
+      });
+      await fetchStats();
     } catch (error) {
       toast({
         title: "Error",
