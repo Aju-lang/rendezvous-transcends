@@ -23,7 +23,7 @@ import {
   Zap
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { createSampleData } from '@/lib/sampleData';
+import { sampleScheduleEvents } from '@/lib/sampleData';
 import { ensureStorageBuckets } from '@/lib/storage';
 import { disableRLS } from '@/lib/rls';
 
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
 
   const handleCreateSampleData = async () => {
     try {
-      const success = await createSampleData();
+      const success = console.log('Sample data setup skipped - manual management enabled');
       if (success) {
         toast({
           title: "Sample Data Created",

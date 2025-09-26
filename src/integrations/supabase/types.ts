@@ -16,24 +16,36 @@ export type Database = {
     Tables: {
       announcements: {
         Row: {
+          category: string | null
+          content: string
           created_at: string
           id: string
+          is_active: boolean | null
           message: string
           priority: string | null
+          title: string
           updated_at: string
         }
         Insert: {
+          category?: string | null
+          content: string
           created_at?: string
           id?: string
+          is_active?: boolean | null
           message: string
           priority?: string | null
+          title: string
           updated_at?: string
         }
         Update: {
+          category?: string | null
+          content?: string
           created_at?: string
           id?: string
+          is_active?: boolean | null
           message?: string
           priority?: string | null
+          title?: string
           updated_at?: string
         }
         Relationships: []
@@ -41,20 +53,35 @@ export type Database = {
       gallery: {
         Row: {
           caption: string | null
+          category: string | null
+          description: string | null
+          event_name: string | null
           id: string
           image_url: string
+          tags: string[] | null
+          title: string
           uploaded_at: string
         }
         Insert: {
           caption?: string | null
+          category?: string | null
+          description?: string | null
+          event_name?: string | null
           id?: string
           image_url: string
+          tags?: string[] | null
+          title: string
           uploaded_at?: string
         }
         Update: {
           caption?: string | null
+          category?: string | null
+          description?: string | null
+          event_name?: string | null
           id?: string
           image_url?: string
+          tags?: string[] | null
+          title?: string
           uploaded_at?: string
         }
         Relationships: []
@@ -66,6 +93,8 @@ export type Database = {
           id: string
           image_url: string | null
           participant: string
+          photo_count: number | null
+          photos: Json | null
           points: number | null
           position: number
           updated_at: string
@@ -76,6 +105,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           participant: string
+          photo_count?: number | null
+          photos?: Json | null
           points?: number | null
           position: number
           updated_at?: string
@@ -86,6 +117,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           participant?: string
+          photo_count?: number | null
+          photos?: Json | null
           points?: number | null
           position?: number
           updated_at?: string
