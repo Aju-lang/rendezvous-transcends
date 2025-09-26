@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, MapPin, Filter } from "lucide-react";
+import { Calendar, Clock, MapPin, Filter, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,9 @@ interface ScheduleEvent {
   time: string;
   venue: string;
   description?: string;
+  document_url?: string;
+  document_name?: string;
+  document_type?: string;
 }
 
 const Schedule = () => {
@@ -198,6 +201,25 @@ const Schedule = () => {
                             <p className="text-sm text-muted-foreground line-clamp-2">
                               {event.description}
                             </p>
+                          )}
+                          {event.document_url && (
+                            <div className="border-t pt-3 mt-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <FileText className="h-4 w-4" />
+                                  <span className="truncate">{event.document_name}</span>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => window.open(event.document_url, '_blank')}
+                                  className="h-8 px-3"
+                                >
+                                  <Download className="h-3 w-3 mr-1" />
+                                  Download
+                                </Button>
+                              </div>
+                            </div>
                           )}
                         </CardContent>
                       </Card>

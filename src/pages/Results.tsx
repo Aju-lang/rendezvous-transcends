@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 interface Result {
   id: string;
@@ -14,6 +15,8 @@ interface Result {
   position: number;
   points: number;
   image_url?: string;
+  photos?: Json;
+  photo_count?: number;
   schedule?: {
     event_name: string;
     category: string;
@@ -180,14 +183,24 @@ const Results = () => {
                               </div>
                             </div>
                             
-                            {result.image_url && (
-                              <Button size="sm" variant="outline" asChild>
-                                <a href={result.image_url} target="_blank" rel="noopener noreferrer">
-                                  <ImageIcon className="h-4 w-4 mr-2" />
-                                  View Certificate
-                                </a>
-                              </Button>
-                            )}
+                            <div className="flex gap-2">
+                              {result.image_url && (
+                                <Button size="sm" variant="outline" asChild>
+                                  <a href={result.image_url} target="_blank" rel="noopener noreferrer">
+                                    <ImageIcon className="h-4 w-4 mr-2" />
+                                    Certificate
+                                  </a>
+                                </Button>
+                              )}
+                              {result.photos && Array.isArray(result.photos) && result.photos.length > 0 && (
+                                <Button size="sm" variant="outline" asChild>
+                                  <a href={result.photos[0] as string} target="_blank" rel="noopener noreferrer">
+                                    <ImageIcon className="h-4 w-4 mr-2" />
+                                    Photos ({result.photos.length})
+                                  </a>
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         ))}
                     </div>

@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Schedule from "./pages/Schedule";
 import Results from "./pages/Results";
 import Leaderboard from "./pages/Leaderboard";
+import Gallery from "./pages/Gallery";
+import Announcements from "./pages/Announcements";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/results" element={<Results />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/announcements" element={<Announcements />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/results" element={<AdminResults />} />

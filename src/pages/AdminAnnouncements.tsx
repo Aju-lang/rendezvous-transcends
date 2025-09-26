@@ -13,15 +13,19 @@ import { toast } from '@/hooks/use-toast';
 
 interface Announcement {
   id: string;
-  message: string;
-  priority: string;
+  title: string;
+  content: string;
+  audio_url?: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  category: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
 const priorities = [
   { value: 'low', label: 'Low', color: 'bg-green-500/20 text-green-600' },
-  { value: 'normal', label: 'Normal', color: 'bg-blue-500/20 text-blue-600' },
+  { value: 'medium', label: 'Medium', color: 'bg-blue-500/20 text-blue-600' },
   { value: 'high', label: 'High', color: 'bg-orange-500/20 text-orange-600' },
   { value: 'urgent', label: 'Urgent', color: 'bg-red-500/20 text-red-600' }
 ];
@@ -38,8 +42,10 @@ const voices = [
 const AdminAnnouncements = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [priority, setPriority] = useState('normal');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [priority, setPriority] = useState('medium');
+  const [category, setCategory] = useState('');
   const [selectedVoice, setSelectedVoice] = useState('alloy');
   const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
   const [generatingAudio, setGeneratingAudio] = useState(false);
@@ -52,9 +58,26 @@ const AdminAnnouncements = () => {
     fetchAnnouncements();
   }, []);
 
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+  const checkAuth = () => {
+    const adminSession = localStorage.getItem('adminSession');
+    if (!adminSession) {
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      const session = JSON.parse(adminSession);
+      const now = new Date();
+      const expiresAt = new Date(session.expiresAt);
+      
+      if (now > expiresAt) {
+        localStorage.removeItem('adminSession');
+        navigate('/auth');
+        return;
+      }
+    } catch (error) {
+      console.error('Error parsing admin session:', error);
+      localStorage.removeItem('adminSession');
       navigate('/auth');
     }
   };
@@ -80,8 +103,10 @@ const AdminAnnouncements = () => {
   };
 
   const clearForm = () => {
-    setMessage('');
-    setPriority('normal');
+    setTitle('');
+    setContent('');
+    setPriority('medium');
+    setCategory('');
     setSelectedVoice('alloy');
     setEditingAnnouncement(null);
   };
@@ -115,10 +140,10 @@ const AdminAnnouncements = () => {
   };
 
   const addAnnouncement = async () => {
-    if (!message.trim()) {
+    if (!title.trim() || !content.trim() || !category.trim()) {
       toast({
         title: "Error",
-        description: "Please enter an announcement message",
+        description: "Please fill in all required fields",
         variant: "destructive"
       });
       return;
@@ -126,8 +151,11 @@ const AdminAnnouncements = () => {
 
     try {
       const announcementData = {
-        message: message.trim(),
-        priority
+        title: title.trim(),
+        content: content.trim(),
+        priority,
+        category: category.trim(),
+        is_active: true
       };
 
       if (editingAnnouncement) {
@@ -167,8 +195,10 @@ const AdminAnnouncements = () => {
   };
 
   const editAnnouncement = (announcement: Announcement) => {
-    setMessage(announcement.message);
+    setTitle(announcement.title);
+    setContent(announcement.content);
     setPriority(announcement.priority);
+    setCategory(announcement.category);
     setEditingAnnouncement(announcement);
   };
 
@@ -211,7 +241,7 @@ const AdminAnnouncements = () => {
       setPlayingAudio(announcement.id);
       
       const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { text: announcement.message, voice: 'alloy' }
+        body: { text: announcement.content, voice: 'alloy' }
       });
 
       if (error) throw error;
@@ -282,16 +312,25 @@ const AdminAnnouncements = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="message">Message *</Label>
+              <Label htmlFor="title">Title *</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter announcement title"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="content">Content *</Label>
               <Textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Enter announcement message"
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Enter announcement content"
                 rows={4}
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="priority">Priority</Label>
                 <Select value={priority} onValueChange={setPriority}>
@@ -306,6 +345,15 @@ const AdminAnnouncements = () => {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="category">Category *</Label>
+                <Input
+                  id="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="Enter category"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="voice">Voice for Preview</Label>
@@ -330,8 +378,8 @@ const AdminAnnouncements = () => {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => generateAudio(message)}
-                disabled={!message.trim() || generatingAudio}
+                onClick={() => generateAudio(content)}
+                disabled={!content.trim() || generatingAudio}
               >
                 {generatingAudio ? (
                   <>
@@ -365,9 +413,9 @@ const AdminAnnouncements = () => {
                     <div className="flex items-center gap-3">
                       <Megaphone className="h-5 w-5 text-primary" />
                       <div>
-                        <CardTitle className="text-lg">Announcement</CardTitle>
+                        <CardTitle className="text-lg">{announcement.title}</CardTitle>
                         <CardDescription>
-                          {new Date(announcement.created_at).toLocaleString()}
+                          {announcement.category} • {new Date(announcement.created_at).toLocaleString()}
                         </CardDescription>
                       </div>
                     </div>
@@ -379,7 +427,7 @@ const AdminAnnouncements = () => {
                 <CardContent className="pt-0">
                   <div className="mb-4">
                     <p className="text-foreground leading-relaxed">
-                      {announcement.message}
+                      {announcement.content}
                     </p>
                   </div>
                   <div className="flex gap-2">

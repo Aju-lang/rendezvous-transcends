@@ -16,46 +16,73 @@ export type Database = {
     Tables: {
       announcements: {
         Row: {
-          created_at: string
           id: string
-          message: string
-          priority: string | null
+          title: string
+          content: string
+          audio_url: string | null
+          priority: 'low' | 'medium' | 'high' | 'urgent'
+          category: string
+          is_active: boolean
+          created_at: string
           updated_at: string
         }
         Insert: {
-          created_at?: string
           id?: string
-          message: string
-          priority?: string | null
+          title: string
+          content: string
+          audio_url?: string | null
+          priority?: 'low' | 'medium' | 'high' | 'urgent'
+          category: string
+          is_active?: boolean
+          created_at?: string
           updated_at?: string
         }
         Update: {
-          created_at?: string
           id?: string
-          message?: string
-          priority?: string | null
+          title?: string
+          content?: string
+          audio_url?: string | null
+          priority?: 'low' | 'medium' | 'high' | 'urgent'
+          category?: string
+          is_active?: boolean
+          created_at?: string
           updated_at?: string
         }
         Relationships: []
       }
       gallery: {
         Row: {
-          caption: string | null
           id: string
+          title: string
+          description: string
           image_url: string
-          uploaded_at: string
+          event_name: string
+          category: string
+          likes_count: number
+          created_at: string
+          updated_at: string
         }
         Insert: {
-          caption?: string | null
           id?: string
+          title: string
+          description: string
           image_url: string
-          uploaded_at?: string
+          event_name: string
+          category: string
+          likes_count?: number
+          created_at?: string
+          updated_at?: string
         }
         Update: {
-          caption?: string | null
           id?: string
+          title?: string
+          description?: string
           image_url?: string
-          uploaded_at?: string
+          event_name?: string
+          category?: string
+          likes_count?: number
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -66,6 +93,8 @@ export type Database = {
           id: string
           image_url: string | null
           participant: string
+          photo_count: number | null
+          photos: Json | null
           points: number | null
           position: number
           updated_at: string
@@ -76,6 +105,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           participant: string
+          photo_count?: number | null
+          photos?: Json | null
           points?: number | null
           position: number
           updated_at?: string
@@ -86,6 +117,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           participant?: string
+          photo_count?: number | null
+          photos?: Json | null
           points?: number | null
           position?: number
           updated_at?: string
@@ -106,6 +139,9 @@ export type Database = {
           created_at: string
           date: string
           description: string | null
+          document_name: string | null
+          document_type: string | null
+          document_url: string | null
           event_name: string
           id: string
           time: string
@@ -117,6 +153,9 @@ export type Database = {
           created_at?: string
           date: string
           description?: string | null
+          document_name?: string | null
+          document_type?: string | null
+          document_url?: string | null
           event_name: string
           id?: string
           time: string
@@ -128,6 +167,9 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string | null
+          document_name?: string | null
+          document_type?: string | null
+          document_url?: string | null
           event_name?: string
           id?: string
           time?: string

@@ -10,16 +10,24 @@ import { toast } from '@/hooks/use-toast';
 
 interface GalleryItem {
   id: string;
+  title: string;
+  description: string;
   image_url: string;
-  caption?: string;
-  uploaded_at: string;
+  event_name: string;
+  category: string;
+  likes_count: number;
+  created_at: string;
+  updated_at: string;
 }
 
 const AdminGallery = () => {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [caption, setCaption] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [eventName, setEventName] = useState('');
+  const [category, setCategory] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +35,26 @@ const AdminGallery = () => {
     fetchGallery();
   }, []);
 
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+  const checkAuth = () => {
+    const adminSession = localStorage.getItem('adminSession');
+    if (!adminSession) {
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      const session = JSON.parse(adminSession);
+      const now = new Date();
+      const expiresAt = new Date(session.expiresAt);
+      
+      if (now > expiresAt) {
+        localStorage.removeItem('adminSession');
+        navigate('/auth');
+        return;
+      }
+    } catch (error) {
+      console.error('Error parsing admin session:', error);
+      localStorage.removeItem('adminSession');
       navigate('/auth');
     }
   };
@@ -39,7 +64,7 @@ const AdminGallery = () => {
       const { data, error } = await supabase
         .from('gallery')
         .select('*')
-        .order('uploaded_at', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setGallery(data || []);
@@ -61,6 +86,15 @@ const AdminGallery = () => {
       toast({
         title: "Error",
         description: "Please select an image file",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!title || !description || !eventName || !category) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
         variant: "destructive"
       });
       return;
@@ -90,8 +124,12 @@ const AdminGallery = () => {
       const { error: dbError } = await supabase
         .from('gallery')
         .insert({
+          title,
+          description,
           image_url: publicUrl,
-          caption: caption || null
+          event_name: eventName,
+          category,
+          likes_count: 0
         });
 
       if (dbError) throw dbError;
@@ -101,7 +139,10 @@ const AdminGallery = () => {
         description: "Image uploaded successfully"
       });
 
-      setCaption('');
+      setTitle('');
+      setDescription('');
+      setEventName('');
+      setCategory('');
       fetchGallery();
     } catch (error: any) {
       toast({
@@ -187,21 +228,50 @@ const AdminGallery = () => {
               Upload New Image
             </CardTitle>
             <CardDescription>
-              Add photos to the gallery
+              Add photos to the gallery with details
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Title *</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter image title"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="eventName">Event Name *</Label>
+                <Input
+                  id="eventName"
+                  value={eventName}
+                  onChange={(e) => setEventName(e.target.value)}
+                  placeholder="Enter event name"
+                />
+              </div>
+            </div>
             <div className="space-y-2">
-              <Label htmlFor="caption">Caption (Optional)</Label>
+              <Label htmlFor="description">Description *</Label>
               <Input
-                id="caption"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                placeholder="Enter image caption"
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Enter image description"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="image">Select Image</Label>
+              <Label htmlFor="category">Category *</Label>
+              <Input
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Enter category (e.g., Sports, Cultural, Academic)"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="image">Select Image *</Label>
               <Input
                 id="image"
                 type="file"
@@ -233,14 +303,21 @@ const AdminGallery = () => {
                 <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors duration-200" />
               </div>
               <CardContent className="p-4">
-                {item.caption && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                    {item.caption}
-                  </p>
-                )}
+                <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.title}</h3>
+                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                  {item.description}
+                </p>
+                <div className="space-y-1 mb-3">
+                  <div className="text-xs">
+                    <span className="font-medium">Event:</span> {item.event_name}
+                  </div>
+                  <div className="text-xs">
+                    <span className="font-medium">Category:</span> {item.category}
+                  </div>
+                </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">
-                    {new Date(item.uploaded_at).toLocaleDateString()}
+                    {new Date(item.created_at).toLocaleDateString()}
                   </span>
                   <Button
                     variant="destructive"

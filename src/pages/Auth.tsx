@@ -21,62 +21,23 @@ const Auth = () => {
     setError('');
     
     // Check fixed credentials
-    if (email !== 'admin' || password !== 'admin12354') {
+    if (email !== 'admin' || password !== 'admin1209') {
       setError('Invalid credentials. Only authorized officials can access this system.');
       setLoading(false);
       return;
     }
 
     try {
-      // First check if admin user exists, if not create it
-      const { data: existingUser } = await supabase.auth.admin.listUsers();
-      const adminUser = existingUser.users.find(user => user.email === 'admin@system.local');
-      
-      if (!adminUser) {
-        // Create admin user if it doesn't exist
-        const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
-          email: 'admin@system.local',
-          password: 'admin12354',
-          email_confirm: true
-        });
-        
-        if (createError) {
-          // Try regular sign up as fallback
-          const { error: signUpError } = await supabase.auth.signUp({
-            email: 'admin@system.local',
-            password: 'admin12354'
-          });
-          
-          if (signUpError) throw signUpError;
-        }
-      }
-
-      // Sign in with the admin credentials
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      // For local festival management, we'll use a simple session-based approach
+      // Store admin session in localStorage
+      const adminSession = {
+        isAdmin: true,
         email: 'admin@system.local',
-        password: 'admin12354',
-      });
+        loginTime: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+      };
       
-      if (signInError) throw signInError;
-
-      // Get the current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        // Check if user has admin role, if not assign it
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('role', 'admin');
-
-        if (!userRoles || userRoles.length === 0) {
-          // Assign admin role
-          await supabase
-            .from('user_roles')
-            .insert({ user_id: user.id, role: 'admin' });
-        }
-      }
+      localStorage.setItem('adminSession', JSON.stringify(adminSession));
       
       toast({
         title: "Welcome, Official!",
@@ -85,8 +46,8 @@ const Auth = () => {
       
       navigate('/admin');
     } catch (error: any) {
-      setError('System access failed. Please contact technical support.');
       console.error('Auth error:', error);
+      setError(`Authentication failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -162,7 +123,7 @@ const Auth = () => {
               <div className="p-3 bg-muted/50 rounded-lg">
                 <p className="font-medium">Official Credentials:</p>
                 <p className="font-mono text-xs">Username: admin</p>
-                <p className="font-mono text-xs">Password: admin12354</p>
+                <p className="font-mono text-xs">Password: admin1209</p>
               </div>
               <p className="text-xs">
                 🔒 Secure access for authorized personnel only

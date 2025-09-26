@@ -5,8 +5,6 @@ enabled = true
 site_url = "http://localhost:3000"
 additional_redirect_urls = ["https://localhost:3000"]
 jwt_expiry = 3600
-refresh_token_rotation_enabled = true
-security_update_password_require_reauthentication = true
 
 [api]
 enabled = true
@@ -24,8 +22,6 @@ enable_confirmations = false
 enable_signup = false
 enable_confirmations = false
 
-[database]
-port = 54322
 
 [studio]
 enabled = true
@@ -41,9 +37,6 @@ pop3_port = 54326
 enabled = true
 file_size_limit = "50MiB"
 
-[edge-runtime]
-enabled = true
-ip_version = "dual"
 
 [functions.text-to-speech]
 verify_jwt = false
