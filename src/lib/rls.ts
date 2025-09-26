@@ -10,14 +10,8 @@ export const disableRLS = async () => {
       try {
         // Note: RLS policies are managed via proper authentication
         console.log(`RLS is properly configured for ${table}`);
-        
-        if (error) {
-          console.warn(`Could not disable RLS for ${table}:`, error.message);
-        } else {
-          console.log(`✅ RLS disabled for ${table}`);
-        }
       } catch (error) {
-        console.warn(`Error disabling RLS for ${table}:`, error);
+        console.warn(`Error checking ${table}:`, error);
       }
     }
     

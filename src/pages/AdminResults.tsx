@@ -256,12 +256,8 @@ const AdminResults = () => {
 
         if (error) {
           if (error.message.includes('row-level security policy')) {
-            console.warn('RLS policy error, trying to disable RLS...');
-            // Try to disable RLS for this table
-            await supabase.rpc('exec_sql', {
-              sql: 'ALTER TABLE public.results DISABLE ROW LEVEL SECURITY;'
-            });
-            // Retry the insert
+            console.warn('RLS policy error, trying to handle properly...');
+            // Retry the insert without RLS bypass
             const { error: retryError } = await supabase
               .from('results')
               .insert({

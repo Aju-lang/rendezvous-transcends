@@ -119,12 +119,7 @@ const Auth = () => {
               )}
             </Button>
             
-            <div className="text-center text-sm text-muted-foreground space-y-2">
-              <div className="p-3 bg-muted/50 rounded-lg">
-                <p className="font-medium">Official Credentials:</p>
-                <p className="font-mono text-xs">Username: admin</p>
-                <p className="font-mono text-xs">Password: admin1209</p>
-              </div>
+            <div className="text-center text-sm text-muted-foreground">
               <p className="text-xs">
                 🔒 Secure access for authorized personnel only
               </p>
