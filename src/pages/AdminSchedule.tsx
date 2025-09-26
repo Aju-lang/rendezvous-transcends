@@ -197,10 +197,8 @@ const AdminSchedule = () => {
         if (error) {
           if (error.message.includes('row-level security policy')) {
             console.warn('RLS policy error, trying to disable RLS...');
-            // Try to disable RLS for this table
-            await supabase.rpc('exec_sql', {
-              sql: 'ALTER TABLE public.schedule DISABLE ROW LEVEL SECURITY;'
-            });
+            // RLS policy error - user needs to be authenticated as admin
+            console.warn('RLS policy error - ensure user is authenticated as admin');
             // Retry the insert
             const { error: retryError } = await supabase
               .from('schedule')
@@ -471,7 +469,7 @@ const AdminSchedule = () => {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => deleteDocument(event.id)}
+                            onClick={() => deleteEvent(event.id)}
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
@@ -481,7 +479,11 @@ const AdminSchedule = () => {
                           <Input
                             type="file"
                             accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx"
-                            onChange={(e) => handleDocumentUpload(e, event.id)}
+                            onChange={(e) => {
+                              if (e.target.files) {
+                                uploadFiles(e.target.files);
+                              }
+                            }}
                             disabled={uploadingDocument}
                             className="hidden"
                             id={`document-${event.id}`}
@@ -527,7 +529,12 @@ const AdminSchedule = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => editEvent(event)}
+                      onClick={() => {
+                        toast({
+                          title: "Feature Coming Soon",
+                          description: "Event editing will be available in the next update"
+                        });
+                      }}
                       className="flex-1"
                     >
                       <Edit className="h-4 w-4 mr-2" />
